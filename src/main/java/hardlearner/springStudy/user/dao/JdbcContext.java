@@ -13,12 +13,18 @@ public class JdbcContext {
         this.dataSource = dataSource;
     }
 
-    public void executeSql(final String query) throws SQLException {
+    public void executeSql(final String query, String ...args) throws SQLException {
         workWithStatementStrategy(
             new StatementStrategy() {
                 @Override
                 public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-                    return c.prepareStatement(query);
+                    PreparedStatement ps = c.prepareStatement(query);
+                    if (args.length > 0) {
+                        for (int sequnce = 1; sequnce <= args.length; sequnce++) {
+                            ps.setString(sequnce, args[sequnce - 1]);
+                        }
+                    }
+                    return ps;
                 }
             }
         );

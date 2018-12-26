@@ -38,28 +38,8 @@ public class UserDao {
         this.dataSource = dataSource;
     }
 
-    public void add(User user) throws ClassNotFoundException, SQLException {
-//        context.workWithStatementStrategy(c -> {
-//                PreparedStatement ps = c.prepareStatement(
-//                        "insert into users(id, name, password) values(?,?,?)"
-//                );
-        context.workWithStatementStrategy(
-                new StatementStrategy() {
-                    @Override
-                    public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-                        PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
-
-                        ps.setString(1, user.getId());
-                        ps.setString(2, user.getName());
-                        ps.setString(3, user.getPassword());
-
-                        return ps;
-                    }
-                }
-
-        );
-
-
+    public void add(User user) throws SQLException {
+        context.executeSql("insert into users(id, name, password) values(?,?,?)", user.getId(), user.getName(), user.getPassword());
     }
 
     public void deleteAll() throws SQLException {
