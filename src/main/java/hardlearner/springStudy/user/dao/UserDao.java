@@ -2,16 +2,14 @@ package hardlearner.springStudy.user.dao;
 
 import hardlearner.springStudy.user.domain.User;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Configuration;
 
-import javax.persistence.PrePersist;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public abstract class UserDao {
+public class UserDao {
 
     private ConnectionMaker connectionMaker;
     private JdbcContext context;
@@ -41,25 +39,32 @@ public abstract class UserDao {
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        context.workWithStatementStrategy(c -> {
-                PreparedStatement ps = c.prepareStatement(
-                        "insert into users(id, name, password) values(?,?,?)"
-                );
+//        context.workWithStatementStrategy(c -> {
+//                PreparedStatement ps = c.prepareStatement(
+//                        "insert into users(id, name, password) values(?,?,?)"
+//                );
+        context.workWithStatementStrategy(
+                new StatementStrategy() {
+                    @Override
+                    public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                        PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
 
-                ps.setString(1, user.getId());
-                ps.setString(2, user.getName());
-                ps.setString(3, user.getPassword());
+                        ps.setString(1, user.getId());
+                        ps.setString(2, user.getName());
+                        ps.setString(3, user.getPassword());
 
-                ps.executeUpdate();
-                return ps;
-            });
+                        return ps;
+                    }
+                }
+
+        );
+
+
     }
 
     public void deleteAll() throws SQLException {
         this.context.executeSql("delete from users");
     }
-
-    abstract PreparedStatement makeStatement(Connection c) throws SQLException;
 
     public User get(String id) throws ClassNotFoundException, SQLException {
         Connection c = connectionMaker.makeConnection();
