@@ -56,10 +56,7 @@ public abstract class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        context.workWithStatementStrategy( c -> {
-            PreparedStatement ps = c.prepareStatement("delete from user");
-            return ps;
-        });
+        this.context.executeSql("delete from users");
     }
 
     abstract PreparedStatement makeStatement(Connection c) throws SQLException;
