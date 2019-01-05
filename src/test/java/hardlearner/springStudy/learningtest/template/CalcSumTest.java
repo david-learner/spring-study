@@ -1,10 +1,8 @@
 package hardlearner.springStudy.learningtest.template;
 
-import org.junit.Rule;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -12,24 +10,26 @@ import static org.junit.Assert.assertThat;
 
 public class CalcSumTest {
 
-//    @Rule
+    //    @Rule
 //    TemporaryFolder tmpFolder = new TemporaryFolder();
 //
+    Calculator calculator;
+    String numFilepath;
+
+    @Before
+    public void setUp() {
+        this.calculator = new Calculator();
+        this.numFilepath = getClass().getResource("/numbers.txt").getPath();
+    }
+
     @Test
     public void sumOfNumbers() throws IOException {
-        Calculator calculator = new Calculator();
-        String path = getClass().getResource("/numbers.txt").getPath();
-        int sum = calculator.calcSum(path);
+        int sum = calculator.calcSum(numFilepath);
         assertThat(sum, is(10));
     }
 
     @Test
-    public void resourceIsNull() {
-        try (BufferedReader br = null) {
-            System.out.println("test");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+    public void multiplyOfNumbers() throws IOException {
+        assertThat(calculator.calcMultiply(this.numFilepath), is(24));
     }
 }
