@@ -5,20 +5,24 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Calculator {
-    public int calcSum(String filePath) throws IOException {
-        BufferedReaderCallback sumCallBack =
-                new BufferedReaderCallback() {
-                    @Override
-                    public Integer doSomethingWithReader(BufferedReader br) throws IOException {
-                        Integer sum = 0;
-                        String line = null;
-                        while ((line = br.readLine()) != null) {
-                            sum = sum + Integer.valueOf(line);
-                        }
-                        return sum;
-                    }
-                };
-        return fileReadTemplate(filePath, sumCallBack);
+    public int calcSum(String filepath) throws IOException {
+        LineCallBack callBack = new LineCallBack() {
+            @Override
+            public Integer doSomethingWithLine(String line, Integer value) {
+                return value + Integer.valueOf(line);
+            }
+        };
+        return lineReadTemplate(filepath, callBack, 0);
+    }
+
+    public Integer calcMultiply(String filepath) throws IOException {
+        LineCallBack callBack = new LineCallBack() {
+            @Override
+            public Integer doSomethingWithLine(String line, Integer value) {
+                return value * Integer.valueOf(line);
+            }
+        };
+        return lineReadTemplate(filepath, callBack, 1);
     }
 
     public Integer fileReadTemplate(String filepath, BufferedReaderCallback callback) throws IOException {
@@ -30,18 +34,17 @@ public class Calculator {
         }
     }
 
-    public Integer calcMultiply(String filePath) throws IOException {
-        BufferedReaderCallback multiplyCallback = new BufferedReaderCallback() {
-            @Override
-            public Integer doSomethingWithReader(BufferedReader br) throws IOException {
-                Integer multiply = 1;
-                String line = null;
-                while((line = br.readLine()) != null) {
-                    multiply = multiply * Integer.valueOf(line);
-                }
-                return multiply;
+    public Integer lineReadTemplate(String filepath, LineCallBack callBack, int initVal) throws IOException {
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            Integer res = initVal;
+            String line = null;
+            while((line = br.readLine()) != null) {
+                res = callBack.doSomethingWithLine(line, res);
             }
-        };
-        return fileReadTemplate(filePath, multiplyCallback);
+            return res;
+        }catch (IOException e) {
+            System.out.println(e.getMessage());
+            throw e; // 예외를 던지지 않으면 아래에서 lineReadTemplate()에서 return문을 요구한다
+        }
     }
 }
