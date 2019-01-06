@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class Calculator {
     public int calcSum(String filepath) throws IOException {
-        LineCallBack callBack = new LineCallBack() {
+        LineCallBack<Integer> callBack = new LineCallBack<Integer>() {
             @Override
             public Integer doSomethingWithLine(String line, Integer value) {
                 return value + Integer.valueOf(line);
@@ -16,13 +16,23 @@ public class Calculator {
     }
 
     public Integer calcMultiply(String filepath) throws IOException {
-        LineCallBack callBack = new LineCallBack() {
+        LineCallBack<Integer> callBack = new LineCallBack<Integer>() {
             @Override
             public Integer doSomethingWithLine(String line, Integer value) {
                 return value * Integer.valueOf(line);
             }
         };
         return lineReadTemplate(filepath, callBack, 1);
+    }
+
+    public String concatenate(String filepath) throws IOException {
+        LineCallBack<String> concatenateCallback = new LineCallBack<String>() {
+            @Override
+            public String doSomethingWithLine(String line, String value) {
+                return value + line;
+            }
+        };
+        return lineReadTemplate(filepath, concatenateCallback, "");
     }
 
     public Integer fileReadTemplate(String filepath, BufferedReaderCallback callback) throws IOException {
@@ -34,9 +44,9 @@ public class Calculator {
         }
     }
 
-    public Integer lineReadTemplate(String filepath, LineCallBack callBack, int initVal) throws IOException {
+    public <T> T lineReadTemplate(String filepath, LineCallBack<T> callBack, T initVal) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
-            Integer res = initVal;
+            T res = initVal;
             String line = null;
             while((line = br.readLine()) != null) {
                 res = callBack.doSomethingWithLine(line, res);
