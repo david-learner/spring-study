@@ -2,6 +2,8 @@ package hardlearner.springStudy.user.dao;
 
 import hardlearner.springStudy.user.domain.User;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -12,7 +14,7 @@ import java.sql.SQLException;
 public class UserDao {
 
     private ConnectionMaker connectionMaker;
-    private JdbcContext context;
+    private JdbcTemplate jdbcTemplate;
     private DataSource dataSource;
 
     // DI - 생성자 주입
@@ -33,17 +35,17 @@ public class UserDao {
     }
 
     public void setDataSource(DataSource dataSource) {
-        context = new JdbcContext();
-        context.setDatasource(dataSource);
+        jdbcTemplate = new JdbcTemplate(dataSource);
         this.dataSource = dataSource;
     }
 
     public void add(User user) throws SQLException {
-        context.executeSql("insert into users(id, name, password) values(?,?,?)", user.getId(), user.getName(), user.getPassword());
+        this.jdbcTemplate.update("insert into users(id, name, password) values(?,?,?)", user.getId(), user.getName(), user.getPassword());
+
     }
 
     public void deleteAll() throws SQLException {
-        this.context.executeSql("delete from users");
+        this.jdbcTemplate.update("DELETE FROM USERS");
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
