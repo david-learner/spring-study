@@ -11,10 +11,19 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class UserDao {
-
     private ConnectionMaker connectionMaker;
     private JdbcTemplate jdbcTemplate;
-    private DataSource dataSource;
+    private RowMapper<User> userMapper =
+            new RowMapper<User>() {
+                @Override
+                public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    User user = new User();
+                    user.setId(rs.getString("id"));
+                    user.setName(rs.getString("name"));
+                    user.setPassword(rs.getString("password"));
+                    return user;
+                }
+            };
 
     // DI - 생성자 주입
     public UserDao(ConnectionMaker connectionMaker) {
@@ -35,7 +44,6 @@ public class UserDao {
 
     public void setDataSource(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        this.dataSource = dataSource;
     }
 
     public void add(User user) throws SQLException {
@@ -47,18 +55,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        return this.jdbcTemplate.queryForObject("SELECT * FROM USERS WHERE id = ?", new Object[]{id},
-                new RowMapper<User>() {
-                    @Override
-                    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        User user = new User();
-                        user.setId(rs.getString("id"));
-                        user.setName(rs.getString("name"));
-                        user.setPassword(rs.getString("password"));
-                        return user;
-                    }
-                }
-        );
+        return this.jdbcTemplate.queryForObject("SELECT * FROM USERS WHERE id = ?", new Object[]{id}, this.userMapper);
     }
 
     public int getCount() {
@@ -66,17 +63,6 @@ public class UserDao {
     }
 
     public List<User> getAll() {
-        return this.jdbcTemplate.query("select * from users order by id",
-                new RowMapper<User>() {
-                    @Override
-                    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        User user = new User();
-                        user.setId(rs.getString("id"));
-                        user.setName(rs.getString("name"));
-                        user.setPassword(rs.getString("password"));
-                        return user;
-                    }
-                }
-        );
+        return this.jdbcTemplate.query("select * from users order by id", this.userMapper);
     }
 }
