@@ -12,4 +12,8 @@
     <bean id="userDao" class="hardlearner.springStudy.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+    <bean id="userService" class="hardlearner.springStudy.user.service.UserService">
+        <property name="userDao" ref="userDao"/>
+        <!-- ref의 userDao는 bean의 id이다 -->
+    </bean>
 </beans>
