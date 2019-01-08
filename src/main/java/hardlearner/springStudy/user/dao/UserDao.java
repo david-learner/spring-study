@@ -1,7 +1,10 @@
 package hardlearner.springStudy.user.dao;
 
+import com.mysql.jdbc.MysqlErrorNumbers;
 import hardlearner.springStudy.user.domain.User;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -46,11 +49,16 @@ public class UserDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void add(User user) throws SQLException {
-        this.jdbcTemplate.update("INSERT INTO USERS(id, name, password) values(?,?,?)", user.getId(), user.getName(), user.getPassword());
+    public void add(User user) throws DuplicateUserIdException {
+//        this.jdbcTemplate.update("INSERT INTO USERS(id, name, password) values(?,?,?)", user.getId(), user.getName(), user.getPassword());
+        try {
+            this.jdbcTemplate.update("INSERT INTO USERS(id, name, password) values(?,?,?)", user.getId(), user.getName(), user.getPassword());
+        }catch(DuplicateKeyException e) {
+            throw new DuplicateUserIdException(e);
+        }
     }
 
-    public void deleteAll() throws SQLException {
+    public void deleteAll() {
         this.jdbcTemplate.update("DELETE FROM USERS");
     }
 
