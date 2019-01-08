@@ -9,7 +9,7 @@
         <property name="password" value="book"/>
     </bean>
 
-    <bean id="userDao" class="hardlearner.springStudy.user.dao.UserDao">
+    <bean id="userDao" class="hardlearner.springStudy.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 </beans>

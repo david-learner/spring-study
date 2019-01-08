@@ -8,8 +8,8 @@ import javax.sql.DataSource;
 
 @Configuration
 public class DaoFactory {
-//    public UserDao userDao() {
-//        return new UserDao(connectionMaker());
+//    public UserDaoJdbc userDao() {
+//        return new UserDaoJdbc(connectionMaker());
 //    }
 
     public AccountDao accountDao() {
