@@ -9,8 +9,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class UserServiceTest {
     @Autowired
     private UserDao userDao;
     @Autowired
-    private DataSource dataSource;
+    private PlatformTransactionManager transactionManager;
 
     private List<User> users;
 
@@ -90,7 +90,7 @@ public class UserServiceTest {
     public void upgradeAllOrNothing() throws Exception {
         UserService testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
-        testUserService.setDatasSource(dataSource);
+        testUserService.setTransactionManager(this.transactionManager);
 
         userDao.deleteAll();
         for (User user : users) {

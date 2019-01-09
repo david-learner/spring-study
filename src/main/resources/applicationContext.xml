@@ -14,7 +14,10 @@
     </bean>
     <bean id="userService" class="hardlearner.springStudy.user.service.UserService">
         <property name="userDao" ref="userDao"/>
-        <property name="datasSource" ref="dataSource"/>
+        <property name="transactionManager" ref="transactionManager"/>
         <!-- ref의 userDao는 bean의 id이다 -->
+    </bean>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 </beans>
