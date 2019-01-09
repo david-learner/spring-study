@@ -14,10 +14,6 @@
     </bean>
     <bean id="userService" class="hardlearner.springStudy.user.service.UserService">
         <property name="userDao" ref="userDao"/>
-        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
         <!-- ref의 userDao는 bean의 id이다 -->
-    </bean>
-    <bean id="userLevelUpgradePolicy" class="hardlearner.springStudy.user.dao.UserLevelUpgradeNormal">
-        <property name="userDao" ref="userDao"/>
     </bean>
 </beans>
