@@ -12,11 +12,14 @@
     <bean id="userDao" class="hardlearner.springStudy.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    <bean id="userService" class="hardlearner.springStudy.user.service.UserService">
-        <property name="userDao" ref="userDao"/>
+    <bean id="userService" class="hardlearner.springStudy.user.service.UserServiceTx">
         <property name="transactionManager" ref="transactionManager"/>
-        <property name="mailSender" ref="mailSender"/>
+        <property name="userService" ref="userServiceImpl"/>
         <!-- ref의 userDao는 bean의 id이다 -->
+    </bean>
+    <bean id="userServiceImpl" class="hardlearner.springStudy.user.service.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+        <property name="mailSender" ref="mailSender"/>
     </bean>
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
