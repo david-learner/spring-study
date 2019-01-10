@@ -38,15 +38,15 @@ public class UserDaoTest {
 
     @Before
     public void setUp() throws SQLException {
-        this.user1 = new User("gyumee", "박성철", "springno1", Level.BASIC, 1, 0);
-        this.user2 = new User("leegw700", "이길원", "springno2", Level.SILVER, 55, 10);
-        this.user3 = new User("bumjin", "박범진", "springno3", Level.GOLD, 100, 40);
+        this.user1 = new User("gyumee", "박성철", "springno1", Level.BASIC, 1, 0, "gyumee@gmail.com");
+        this.user2 = new User("leegw700", "이길원", "springno2", Level.SILVER, 55, 10, "leegw700@naver.com");
+        this.user3 = new User("bumjin", "박범진", "springno3", Level.GOLD, 100, 40, "bumjin@daum.net");
         dao.deleteAll();
     }
 
     @Test
     public void add() throws SQLException, ClassNotFoundException {
-        User user = new User("whiteship", "keesun", "married", Level.BASIC, 2, 1);
+        User user = new User("whiteship", "keesun", "married", Level.BASIC, 2, 1, "whiteship@micro.soft");
 
         dao.add(user);
 
