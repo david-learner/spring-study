@@ -13,7 +13,6 @@ public class UserServiceImpl implements UserService {
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
     public UserDao userDao;
-
     private MailSender mailSender;
 
     public void setUserDao(UserDao userDao) {

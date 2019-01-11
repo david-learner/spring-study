@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static hardlearner.springStudy.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static hardlearner.springStudy.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+import static hardlearner.springStudy.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static hardlearner.springStudy.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
@@ -29,6 +29,8 @@ import static org.junit.Assert.*;
 public class UserServiceTest {
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserServiceImpl userServiceImpl;
     @Autowired
     private UserDao userDao;
     @Autowired
@@ -59,7 +61,7 @@ public class UserServiceTest {
         }
 
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender);
+        userServiceImpl.setMailSender(mockMailSender);
 
         userService.upgradeLevels();
 
@@ -103,11 +105,14 @@ public class UserServiceTest {
     }
 
     @Test
-    public void upgradeAllOrNothing() throws Exception {
-        UserService testUserService = new TestUserService(users.get(3).getId());
+    public void upgradeAllOrNothing() {
+        TestUserService testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
-        testUserService.setTransactionManager(this.transactionManager);
         testUserService.setMailSender(this.mailSender);
+
+        UserServiceTx txUserService = new UserServiceTx();
+        txUserService.setTransactionManager(transactionManager);
+        txUserService.setUserService(testUserService);
 
         userDao.deleteAll();
         for (User user : users) {
@@ -115,7 +120,7 @@ public class UserServiceTest {
         }
 
         try {
-            testUserService.upgradeLevels();
+            txUserService.upgradeLevels();
             fail("TestUserException expected");
         } catch (TestUserServiceException e) {
 
@@ -137,7 +142,7 @@ public class UserServiceTest {
         }
     }
 
-    static class TestUserService extends UserService {
+    static class TestUserService extends UserServiceImpl {
         private String id;
 
         private TestUserService(String id) {
