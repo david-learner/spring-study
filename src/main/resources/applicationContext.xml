@@ -12,11 +12,13 @@
     <bean id="userDao" class="hardlearner.springStudy.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+    <!-- Decorator -->
     <bean id="userService" class="hardlearner.springStudy.user.service.UserServiceTx">
         <property name="transactionManager" ref="transactionManager"/>
         <property name="userService" ref="userServiceImpl"/>
         <!-- ref의 userDao는 bean의 id이다 -->
     </bean>
+    <!-- Target -->
     <bean id="userServiceImpl" class="hardlearner.springStudy.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
         <property name="mailSender" ref="mailSender"/>
