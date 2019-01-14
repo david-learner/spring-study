@@ -3,8 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-        <property name="driverClass" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost/springbook" />
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost/springbook"/>
         <property name="username" value="spring"/>
         <property name="password" value="book"/>
     </bean>
@@ -12,12 +12,13 @@
     <bean id="userDao" class="hardlearner.springStudy.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    <!-- Decorator -->
-    <bean id="userService" class="hardlearner.springStudy.user.service.UserServiceTx">
+    <bean id="userService" class="hardlearner.springStudy.user.service.TxProxyFactoryBean">
+        <property name="target" ref="userServiceImpl"/>
         <property name="transactionManager" ref="transactionManager"/>
-        <property name="userService" ref="userServiceImpl"/>
-        <!-- ref의 userDao는 bean의 id이다 -->
+        <property name="pattern" value="upgradeLevels"/>
+        <property name="serviceInterface" value="hardlearner.springStudy.user.service.UserService"/>
     </bean>
+
     <!-- Target -->
     <bean id="userServiceImpl" class="hardlearner.springStudy.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>

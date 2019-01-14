@@ -9,7 +9,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.theInstance;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -22,7 +21,7 @@ public class FactoryBeanTest {
     public void getMessageFromFactoryBean() {
         Object message = context.getBean("message");
         assertThat(message.getClass(), equalTo(Message.class));
-        assertThat(((Message)message).getText(), is("Factory Bean"));
+        assertThat(((Message) message).getText(), is("Factory Bean"));
     }
 
     @Test
