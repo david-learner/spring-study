@@ -1,4 +1,4 @@
-package hardlearner.springStudy.learningtest.proxy;
+package hardlearner.springStudy.learningtest.jdk.proxy;
 
 // proxy
 public class HelloUppercase implements Hello{

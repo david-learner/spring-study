@@ -1,4 +1,4 @@
-package hardlearner.springStudy.learningtest.proxy;
+package hardlearner.springStudy.learningtest.jdk.proxy;
 
 public interface Hello {
     String sayHello(String name);
