@@ -2,6 +2,8 @@ package hardlearner.springStudy.learningtest.proxy;
 
 import org.junit.Test;
 
+import java.lang.reflect.Proxy;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
