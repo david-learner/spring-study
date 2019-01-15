@@ -4,6 +4,8 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Test;
 import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 
 import java.lang.reflect.Proxy;
 
@@ -33,6 +35,24 @@ public class DynamicProxyTest {
         assertThat(proxiedHello.sayThankYou("Toby"), is("THANK YOU TOBY"));
     }
 
+    @Test
+    public void pointcutAdvisor() {
+        ProxyFactoryBean pfBean = new ProxyFactoryBean();
+        pfBean.setTarget(new HelloTarget());
+
+        // 메소드 이름을 비교해서 대상을 선정하는 알고리즘을 제공하는 포인트컷
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+        pointcut.setMappedName("sayH*");
+
+        pfBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice()));
+
+        Hello proxiedHello = (Hello) pfBean.getObject();
+
+        assertThat(proxiedHello.sayHello("Toby"), is("HELLO TOBY"));
+        assertThat(proxiedHello.sayHi("Toby"), is("HI TOBY"));
+        assertThat(proxiedHello.sayThankYou("Toby"), is("THANK YOU TOBY"));
+    }
+
     static class UppercaseAdvice implements MethodInterceptor {
 
         @Override
@@ -44,7 +64,9 @@ public class DynamicProxyTest {
 
     static interface Hello {
         String sayHello(String name);
+
         String sayHi(String name);
+
         String sayThankYou(String name);
     }
 
