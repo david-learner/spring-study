@@ -3,27 +3,29 @@ package hardlearner.springStudy.user.service;
 import hardlearner.springStudy.user.dao.UserDao;
 import hardlearner.springStudy.user.domain.Level;
 import hardlearner.springStudy.user.domain.User;
+import jdk.internal.org.objectweb.asm.commons.Method;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.framework.Advised;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.PlatformTransactionManager;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static hardlearner.springStudy.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
 import static hardlearner.springStudy.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -34,15 +36,11 @@ public class UserServiceTest {
     @Autowired
     private UserService userService;
     @Autowired
-    private UserServiceImpl userServiceImpl;
+    private UserService testUserService;
     @Autowired
     private UserDao userDao;
     @Autowired
-    private PlatformTransactionManager transactionManager;
-    @Autowired
     private ApplicationContext context;
-
-    private MailSender mailSender = new DummyMailSender();
 
     private List<User> users;
 
@@ -143,24 +141,14 @@ public class UserServiceTest {
     }
 
     @Test
-    @DirtiesContext
     public void upgradeAllOrNothing() throws Exception {
-        TestUserService testUserService = new TestUserService(users.get(3).getId());
-        testUserService.setUserDao(this.userDao);
-        testUserService.setMailSender(this.mailSender);
-
-        ProxyFactoryBean txProxyFactoryBean =
-                context.getBean("&userService", ProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(testUserService);
-        UserService txUserService = (UserService) txProxyFactoryBean.getObject();
-
         userDao.deleteAll();
         for (User user : users) {
             userDao.add(user);
         }
 
         try {
-            txUserService.upgradeLevels();
+            this.testUserService.upgradeLevels();
             fail("TestUserException expected");
         } catch (TestUserServiceException e) {
 
@@ -182,12 +170,14 @@ public class UserServiceTest {
         }
     }
 
-    static class TestUserService extends UserServiceImpl {
-        private String id;
+    @Test
+    public void advisorAutoProxyCreator() {
+//        assertThat(testUserService, equalTo(java.lang.reflect.Proxy.class)); // testUserService가 타깃의 클래스명 그대로 찍힘
+        assertTrue(testUserService.getClass().getCanonicalName().contains("Proxy"));
+    }
 
-        private TestUserService(String id) {
-            this.id = id;
-        }
+    static class TestUserServiceImpl extends UserServiceImpl {
+        private String id = "madnite1";
 
         @Override
         protected void upgradeLevel(User user) {

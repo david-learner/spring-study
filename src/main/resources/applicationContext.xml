@@ -8,40 +8,32 @@
         <property name="username" value="spring"/>
         <property name="password" value="book"/>
     </bean>
-
     <bean id="userDao" class="hardlearner.springStudy.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="target" ref="userServiceImpl"/>
-        <property name="interceptorNames">
-            <list>
-                <value>transactionAdvisor</value>
-            </list>
-        </property>
-    </bean>
-    <!-- Target -->
-    <bean id="userServiceImpl" class="hardlearner.springStudy.user.service.UserServiceImpl">
+    <bean id="userService" class="hardlearner.springStudy.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
         <property name="mailSender" ref="mailSender"/>
     </bean>
+    <bean id="testUserService" class="hardlearner.springStudy.user.service.UserServiceTest$TestUserServiceImpl" parent="userService"/>
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="mail.server.com"/>
-    </bean>
+    <bean id="mailSender" class="hardlearner.springStudy.user.service.DummyMailSender"/>
     <!-- Advice -->
-    <bean id="transcationAdvice" class="hardlearner.springStudy.user.service.TransactionAdvice">
+    <bean id="transactionAdvice" class="hardlearner.springStudy.user.service.TransactionAdvice">
         <property name="transactionManager" ref="transactionManager"/>
     </bean>
     <!-- Pointcut -->
-    <bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+    <bean id="transactionPointcut" class="hardlearner.springStudy.user.service.NameMatchClassMethodPointcut">
+        <property name="mappedClassName" value="*ServiceImpl"/>
         <property name="mappedName" value="upgrade*"/>
     </bean>
     <!-- Advisor -->
     <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
-        <property name="advice" ref="transcationAdvice"/>
+        <property name="advice" ref="transactionAdvice"/>
         <property name="pointcut" ref="transactionPointcut"/>
     </bean>
+    <!-- AutoProxyCreator -->
+    <bean id="autoProxyCreator" class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 </beans>
