@@ -1,6 +1,6 @@
 package hardlearner.springStudy.user.service;
 
-import hardlearner.springStudy.user.dao.Level;
+import hardlearner.springStudy.user.domain.Level;
 import hardlearner.springStudy.user.dao.UserDao;
 import hardlearner.springStudy.user.domain.User;
 import org.junit.Before;

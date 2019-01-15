@@ -1,8 +1,6 @@
 package hardlearner.springStudy.user.domain;
 
 
-import hardlearner.springStudy.user.dao.Level;
-
 public class User {
     private String id;
     private String name;

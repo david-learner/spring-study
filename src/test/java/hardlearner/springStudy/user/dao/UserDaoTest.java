@@ -1,5 +1,6 @@
 package hardlearner.springStudy.user.dao;
 
+import hardlearner.springStudy.user.domain.Level;
 import hardlearner.springStudy.user.domain.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,6 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

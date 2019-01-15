@@ -1,6 +1,5 @@
 package hardlearner.springStudy.user.domain;
 
-import hardlearner.springStudy.user.dao.Level;
 import org.junit.Before;
 import org.junit.Test;
 

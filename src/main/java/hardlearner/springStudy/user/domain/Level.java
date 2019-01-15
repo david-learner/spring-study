@@ -1,4 +1,4 @@
-package hardlearner.springStudy.user.dao;
+package hardlearner.springStudy.user.domain;
 
 public enum Level {
 

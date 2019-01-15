@@ -1,5 +1,6 @@
 package hardlearner.springStudy.user.dao;
 
+import hardlearner.springStudy.user.domain.Level;
 import hardlearner.springStudy.user.domain.User;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.DuplicateKeyException;
