@@ -3,12 +3,10 @@ package hardlearner.springStudy.user.service;
 import hardlearner.springStudy.user.dao.UserDao;
 import hardlearner.springStudy.user.domain.Level;
 import hardlearner.springStudy.user.domain.User;
-import jdk.internal.org.objectweb.asm.commons.Method;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.aop.framework.Advised;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
@@ -17,15 +15,12 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static hardlearner.springStudy.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
 import static hardlearner.springStudy.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -172,7 +167,7 @@ public class UserServiceTest {
 
     @Test
     public void advisorAutoProxyCreator() {
-//        assertThat(testUserService, equalTo(java.lang.reflect.Proxy.class)); // testUserService가 타깃의 클래스명 그대로 찍힘
+//        assertThat(testUserService, equalTo(java.lang.reflect.Proxy.class)); // testUserService 타깃의 클래스명 그대로 찍힘
         assertTrue(testUserService.getClass().getCanonicalName().contains("Proxy"));
     }
 

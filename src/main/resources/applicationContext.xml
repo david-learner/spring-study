@@ -25,9 +25,8 @@
         <property name="transactionManager" ref="transactionManager"/>
     </bean>
     <!-- Pointcut -->
-    <bean id="transactionPointcut" class="hardlearner.springStudy.user.service.NameMatchClassMethodPointcut">
-        <property name="mappedClassName" value="*ServiceImpl"/>
-        <property name="mappedName" value="upgrade*"/>
+    <bean id="transactionPointcut" class="org.springframework.aop.aspectj.AspectJExpressionPointcut">
+        <property name="expression" value="execution(* *..*ServiceImpl.upgrade*(..))" />
     </bean>
     <!-- Advisor -->
     <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
