@@ -31,11 +31,6 @@
             <!--</props>-->
         <!--</property>-->
     <!--</bean>-->
-    <!-- AOP -->
-    <aop:config>
-        <!--<aop:pointcut id="transactionPointcut" expression="execution(* *..*ServiceImpl.upgrade*(..))"/>-->
-        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
-    </aop:config>
     <!-- tx : transaction -->
     <tx:advice id="transactionAdvice">
         <tx:attributes>
@@ -43,6 +38,11 @@
             <tx:method name="*"/>
         </tx:attributes>
     </tx:advice>
+    <!-- AOP -->
+    <aop:config>
+        <!--<aop:pointcut id="transactionPointcut" expression="execution(* *..*ServiceImpl.upgrade*(..))"/>-->
+        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
+    </aop:config>
     <!-- AutoProxyCreator -->
     <bean id="autoProxyCreator" class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 </beans>

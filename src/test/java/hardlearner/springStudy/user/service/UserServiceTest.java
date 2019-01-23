@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -171,6 +172,12 @@ public class UserServiceTest {
         assertTrue(testUserService.getClass().getCanonicalName().contains("Proxy"));
     }
 
+    @Test(expected = TransientDataAccessResourceException.class)
+    public void readOnlyTransactionAttribute() {
+        testUserService.add(users.get(0));
+        testUserService.getAll();
+    }
+
     static class TestUserServiceImpl extends UserServiceImpl {
         private String id = "madnite1";
 
@@ -180,6 +187,15 @@ public class UserServiceTest {
                 throw new TestUserServiceException();
             }
             super.upgradeLevel(user);
+        }
+
+        @Override
+        public List<User> getAll() {
+            List<User> users = super.getAll();
+            for (User user : users) {
+                super.update(user);
+            }
+            return null;
         }
     }
 
