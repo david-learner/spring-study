@@ -3,6 +3,8 @@ package hardlearner.springStudy.user.service;
 import hardlearner.springStudy.user.dao.UserDao;
 import hardlearner.springStudy.user.domain.Level;
 import hardlearner.springStudy.user.domain.User;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +17,10 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +42,7 @@ public class UserServiceTest {
     @Autowired
     private UserDao userDao;
     @Autowired
-    private ApplicationContext context;
+    private PlatformTransactionManager transactionManager;
 
     private List<User> users;
 
@@ -177,6 +182,25 @@ public class UserServiceTest {
     public void readOnlyTransactionAttribute() {
         testUserService.add(users.get(0));
         testUserService.getAll();
+    }
+
+    @Test
+    @Transactional
+    public void transactionSync() {
+        assertThat(userDao.getCount(), is(0));
+
+        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+
+        try {
+            userService.deleteAll();
+            userService.add(users.get(0));
+            userService.add(users.get(1));
+            assertThat(userDao.getCount(), is(2));
+        } finally {
+//            transactionManager.rollback(txStatus);
+            transactionManager.commit(txStatus);
+        }
     }
 
     static class TestUserServiceImpl extends UserServiceImpl {
