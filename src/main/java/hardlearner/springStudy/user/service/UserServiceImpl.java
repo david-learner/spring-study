@@ -1,7 +1,7 @@
 package hardlearner.springStudy.user.service;
 
-import hardlearner.springStudy.user.domain.Level;
 import hardlearner.springStudy.user.dao.UserDao;
+import hardlearner.springStudy.user.domain.Level;
 import hardlearner.springStudy.user.domain.User;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -9,7 +9,6 @@ import org.springframework.mail.SimpleMailMessage;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
-
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
     public UserDao userDao;
@@ -74,5 +73,25 @@ public class UserServiceImpl implements UserService {
             user.setLevel(Level.BASIC);
         }
         userDao.add(user);
+    }
+
+    @Override
+    public User get(String id) {
+        return userDao.get(id);
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userDao.getAll();
+    }
+
+    @Override
+    public void deleteAll() {
+        userDao.deleteAll();
+    }
+
+    @Override
+    public void update(User user) {
+        userDao.update(user);
     }
 }
