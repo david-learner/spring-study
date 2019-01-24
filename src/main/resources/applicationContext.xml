@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.springframework.org/schema/tx http://www.springframework.org/tx/spring-tx-3.0.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd   http://www.springframework.org/schema/tx http://www.springframework.org/tx/spring-tx-3.0.xsd">
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://localhost/springbook"/>
@@ -11,31 +11,47 @@
     </bean>
     <bean id="userDao" class="hardlearner.springStudy.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
+        <property name="sqlService" ref="sqlService"/>
+    </bean>
+    <bean id="sqlService" class="hardlearner.springStudy.user.service.SimpleSqlService">
+        <property name="sqlMap">
+            <map>
+                <entry key="userAdd"
+                       value="INSERT INTO USERS(id, name, password, level, login, recommend, email) values(?,?,?,?,?,?,?)"/>
+                <entry key="userGet" value="SELECT * FROM USERS WHERE id = ?"/>
+                <entry key="userGetAll" value="select * from users order by id"/>
+                <entry key="userDeleteAll" value="DELETE FROM USERS"/>
+                <entry key="userGetCount" value="SELECT COUNT(*) FROM USERS"/>
+                <entry key="userUpdate"
+                       value="update users set name = ?, password = ?, level = ?, login = ?, recommend = ? where id = ? "/>
+            </map>
+        </property>
     </bean>
     <bean id="userService" class="hardlearner.springStudy.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
         <property name="mailSender" ref="mailSender"/>
     </bean>
-    <bean id="testUserService" class="hardlearner.springStudy.user.service.UserServiceTest$TestUserServiceImpl" parent="userService"/>
+    <bean id="testUserService" class="hardlearner.springStudy.user.service.UserServiceTest$TestUserServiceImpl"
+          parent="userService"/>
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
     <bean id="mailSender" class="hardlearner.springStudy.user.service.DummyMailSender"/>
     <!-- Advice -->
     <!--<bean id="transactionAdvice" class="org.springframework.transaction.interceptor.TransactionInterceptor">-->
-        <!--<property name="transactionManager" ref="transactionManager"/>-->
-        <!--<property name="transactionAttributes">-->
-            <!--<props>-->
-                <!--<prop key="get*">PROPAGATION_REQUEIRED, readOnly</prop>-->
-                <!--<prop key="*">PROPAGATION_REQUIRED</prop>-->
-            <!--</props>-->
-        <!--</property>-->
+    <!--<property name="transactionManager" ref="transactionManager"/>-->
+    <!--<property name="transactionAttributes">-->
+    <!--<props>-->
+    <!--<prop key="get*">PROPAGATION_REQUEIRED, readOnly</prop>-->
+    <!--<prop key="*">PROPAGATION_REQUIRED</prop>-->
+    <!--</props>-->
+    <!--</property>-->
     <!--</bean>-->
     <!-- tx : transaction -->
     <tx:advice id="transactionAdvice">
         <!--<tx:attributes>-->
-            <!--<tx:method name="get*" read-only="true"/>-->
-            <!--<tx:method name="*"/>-->
+        <!--<tx:method name="get*" read-only="true"/>-->
+        <!--<tx:method name="*"/>-->
         <!--</tx:attributes>-->
     </tx:advice>
     <tx:annotation-driven/>
