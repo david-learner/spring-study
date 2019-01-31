@@ -40,7 +40,7 @@ public class UserDaoTest {
     public void setUp() throws SQLException {
         this.user1 = new User("gyumee", "박성철", "springno1", Level.BASIC, 1, 0, "gyumee@gmail.com");
         this.user2 = new User("leegw700", "이길원", "springno2", Level.SILVER, 55, 10, "leegw700@naver.com");
-        this.user3 = new User("bumjin", "박범진", "springno3", Level.GOLD, 100, 40, "bumjin@daum.net");
+        this.user3 = new User("bumjinp", "박범진", "springno3", Level.GOLD, 100, 40, "bumjin@daum.net");
         dao.deleteAll();
     }
 
