@@ -21,7 +21,7 @@
         <property name="sqlService" ref="sqlService"/>
     </bean>
     <bean id="sqlService" class="hardlearner.springStudy.user.sqlservice.XmlSqlService">
-        <property name="sqlmapFile" value="/hardlearner/springStudy/user/sqlservice/sqlmap.xml"/>
+        <property name="sqlmapFile" value="/sqlmap.xml"/>
     </bean>
     <bean id="userService" class="hardlearner.springStudy.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
