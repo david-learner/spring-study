@@ -20,12 +20,10 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="sqlService" ref="sqlService"/>
     </bean>
-    <bean id="sqlService" class="hardlearner.springStudy.user.sqlservice.BaseSqlService">
-        <property name="sqlReader" ref="sqlReader"/>
-        <property name="sqlRegistry" ref="sqlRegistry"/>
+    <bean id="sqlService" class="hardlearner.springStudy.user.sqlservice.DefaultSqlService">
     </bean>
     <bean id="sqlReader" class="hardlearner.springStudy.user.sqlservice.JaxbXmlSqlReader">
-        <property name="sqlmapFile" value="/sqlmap.xml"/>
+        <!--<property name="sqlmapFile" value="/sqlmap.xml"/>-->
     </bean>
     <bean id="sqlRegistry" class="hardlearner.springStudy.user.sqlservice.HashMapSqlRegistry">
     </bean>
